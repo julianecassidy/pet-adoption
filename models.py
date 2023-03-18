@@ -7,7 +7,6 @@ db = SQLAlchemy()
 DEFAULT_IMAGE_URL = 'https://images.wagwalkingweb.com/media/daily_wag/name_guides/cartoon-dog-names/featured_dog/snoopy.jpg?auto=compress&fit=max'
 
 
-
 def connect_db(app):
     """Connect this database to provided Flask app.
 
@@ -17,6 +16,7 @@ def connect_db(app):
     app.app_context().push()
     db.app = app
     db.init_app(app)
+
 
 class Pet(db.Model):
     """Pets."""
@@ -50,7 +50,8 @@ class Pet(db.Model):
     )
 
     notes = db.Column(
-        db.Text
+        db.Text,
+         nullable=False # nullable, default = ""
     )
 
     available = db.Column(

@@ -5,7 +5,7 @@ import os
 from flask import Flask, render_template, request, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import connect_db, Pet, db
+from models import connect_db, Pet, db, DEFAULT_IMAGE_URL
 from forms import AddPetForm, EditPetForm
 
 app = Flask(__name__)
@@ -14,7 +14,7 @@ app.config['SECRET_KEY'] = "secret"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     "DATABASE_URL", "postgresql:///adopt")
-app.config['SQLALCHEMY_ECHO']=True
+app.config['SQLALCHEMY_ECHO'] = True
 
 connect_db(app)
 
@@ -28,25 +28,23 @@ toolbar = DebugToolbarExtension(app)
 
 @app.get('/')
 def show_home():
-    """Show homepage."""
+    """Show homepage and displays pets."""  # more info here
 
     pets = Pet.query.all()
     return render_template('home.html', pets=pets)
 
-@app.route('/add', methods = ['GET', 'POST'])
+
+@app.route('/add', methods=['GET', 'POST'])
 def show_add_pet_form():
     """Show form to add pet and handle submits"""
 
-    form  = AddPetForm()
+    form = AddPetForm()
 
     if form.validate_on_submit():
-        name = form.name.data
-        species = form.species.data
-        photo_url = form.photo_url.data or None
-        age = form.age.data
-        notes = form.notes.data
 
-        pet = Pet(name=name, species=species, photo_url=photo_url, age=age, notes=notes)
+        pet = Pet(
+            name=form.name.data, species=form.species.data,
+            photo_url=form.photo_url.data or None, age=form.age.data, notes=form.notes.dates)
 
         db.session.add(pet)
         db.session.commit()
@@ -55,25 +53,22 @@ def show_add_pet_form():
 
     else:
         return render_template('add_pet_form.html', form=form)
-    
-@app.route('/<int:pet_id>')
+
+
+@app.route('/<int:pet_id>', methods=['GET', 'POST'])
 def handle_edit_form(pet_id):
     """Show pet detail page and edit page and handle form submit"""
 
-    form = EditPetForm()
-
     pet = Pet.query.get_or_404(pet_id)
+    form = EditPetForm(obj=pet)
 
     if form.validate_on_submit():
-        photo_url = form.photo_url.data or None
-        notes = form.notes.data
-        available = form.available.data
 
-        pet.photo_url = photo_url
-        pet.notes = notes
-        pet.available = available
+        pet.photo_url = form.photo_url.data or DEFAULT_IMAGE_URL
+        pet.notes = form.notes.data
+        pet.available = form.available.data
 
-        db.session.commmit()
+        db.session.commit()
 
         return redirect('/')
 

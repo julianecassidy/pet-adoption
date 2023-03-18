@@ -1,35 +1,31 @@
-{% extends 'base.html' %} {% block title %} Add a Pet! {% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %} Add a Pet! {% endblock %} {% block
+content %}
 
 <h1>Pet details</h1>
 
 <div>
+  <h2>{{ pet.name }}</h2>
 
-<h2>{{ pet.name }}</h2>
-
-<img src="{{ pet.photo_url }}" style="max-width: 400px;">
-Age: {{ pet.age }}
-Species: {{ pet.species }}
+  <img src="{{ pet.photo_url }}" style="max-width: 400px" />
+  Age: {{ pet.age }} Species: {{ pet.species }}
 </div>
 
 <div>
-<form id="edit-form" method="POST">
-  {{ form.hidden_tag() }}
-  <!--add type=hidden form fields -->
+  <form id="edit-form" method="POST">
+    {{ form.hidden_tag() }}
+    <!--add type=hidden form fields -->
 
-  {% for field in form if field.widget.input_type != 'hidden' %}
+    {% for field in form if field.widget.input_type != 'hidden' %}
 
-  <p>
-    {{ field.label }} {{ field }} {% for error in field.errors %} {{ error }} {%
-    endfor %}
-  </p>
+    <p>
+      {{ field.label }} {{ field }} {% for error in field.errors %} {{ error }}
+      {% endfor %}
+    </p>
 
-  {% endfor %}
+    {% endfor %}
 
-  <button type="submit">Submit</button>
-</form>
-
+    <button type="submit">Submit</button>
+  </form>
 </div>
 
 {% endblock %}

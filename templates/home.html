@@ -1,20 +1,21 @@
-{% extends "base.html" %}
-
-{% block title %}Pet Adoption{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Pet Adoption{% endblock %} {% block
+content %}
 <div>
-    <h1>Pet Adoption</h1>
+  <h1>Pet Adoption</h1>
 </div>
 
 <div>
-    <ul>
-      {% for pet in pets %}
-      <li><img src="{{ pet.photo_url }}" style="max-width: 200px"><br>
-      {{ pet.name }} {% if pet.available %}is <b>Available</b>{% endif %}</li>
-      {% endfor %}
-      </ul>
-     <button class="btn btn-primary"><a href="/add" >Add a pet!</a></button>
+  <ul>
+    {% for pet in pets %}
+    <li>
+      <a href="/{{ pet.id }}"
+        ><img src="{{ pet.photo_url }}" style="max-width: 200px" /><br />
+        {{ pet.name }} {% if pet.available %}is <b>Available</b>{% endif %}</a
+      >
+    </li>
+    {% endfor %}
+  </ul>
+  <button class="btn btn-primary"><a href="/add">Add a pet!</a></button>
 </div>
 
 {% endblock %}
